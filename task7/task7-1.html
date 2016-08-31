@@ -59,6 +59,7 @@
 				var oConfirmBox = document.querySelector(".confirm-box");
 				var oCancle = document.querySelector(".cancle");
 				var oConfirm = document.querySelector(".confirm");
+				var oTop = document.querySelector(".top");
 				
 				oBtn1.onclick = function () {
 					
@@ -66,13 +67,45 @@
 					oConfirmBox.style.display = "block";
 					var oBoxWidth = oConfirmBox.offsetWidth;
 					var oBoxHeight = oConfirmBox.offsetHeight;
-					oConfirmBox.style.marginLeft = -oBoxWidth/2 + "px"; 
-					oConfirmBox.style.marginTop = -oBoxHeight/2 + "px"; 
+					var bodyW = document.documentElement.clientWidth;
+					var bodyH = document.documentElement.clientHeight;
+					oConfirmBox.style.left = (bodyW - oBoxWidth)/2 + "px";
+					oConfirmBox.style.top = (bodyH - oBoxHeight)/2 + "px"; 
 				}
 				oMask.onclick = oCancle.onclick = oConfirm.onclick =function () {
 					oMask.style.display = "none";
 					oConfirmBox.style.display = "none";
 				}
+			
+			
+			
+				var oTop = document.querySelector(".top");
+				oTop.onmousedown = function (ev) {
+					var oEvt = ev || event;
+					var disX = oEvt.clientX - oConfirmBox.offsetLeft;
+					var disY = oEvt.clientY - oConfirmBox.offsetTop;
+					document.onmousemove = function (ev) {
+						var oEvt =ev || event;
+						var l = oEvt.clientX - disX;
+						var t = oEvt.clientY -disY;
+						if (l < 0) l = 0;
+						if ( l > document.documentElement.clientWidth - oConfirmBox.offsetWidth)
+							l = document.documentElement.clientWidth - oConfirmBox.offsetWidth;
+						if ( t < 0) t = 0;
+						if ( t > document.documentElement.clientHeight - oConfirmBox.offsetHeight)
+							t = document.documentElement.clientHeight - oConfirmBox.offsetHeight;
+							
+						oConfirmBox.style.left = l + 'px';
+						oConfirmBox.style.top = t + 'px';
+					}
+					document.onmouseup = function () {
+						document.onmousemove = document.onmouseup = null;
+						oTop.releaseCapture && oTop.releaseCapture();
+					}
+					oTop.setCapture && oTop.setCapture();
+					return false;
+				}
+
 			}
 		</script>
 	</body>
